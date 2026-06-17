@@ -231,7 +231,7 @@ export function displayDialogue(textOrPages, onDisplayEnd, isExit = false) {
   }
 
   function onHeartClick() {
-    window.location.href = '/surprise/index.html';
+    window.location.href = "./surprise/index.html";
   }
 
   function handleKeydown(e) {
