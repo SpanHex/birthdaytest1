@@ -1,0 +1,510 @@
+/* =====================================================================
+   style.css — Surprise / Gallery Page
+   Cinematic dark theme · 3D carousel · Narrative text · Responsive
+   ===================================================================== */
+
+/* ── Fonts & Reset ─────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #050510;
+  --bg-2:        #0a0820;
+  --accent:      #ff65a3;
+  --accent-2:    #ffd700;
+  --accent-3:    #a78bfa;
+  --white:       #f0e8ff;
+  --grey:        #6b7280;
+  --card-w:      clamp(180px, 28vw, 340px);
+  --card-h:      clamp(240px, 37vw, 450px);
+  --font-pixel:  'Press Start 2P', monospace;
+  --font-vt:     'VT323', monospace;
+  --ease-expo:   cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: var(--font-vt);
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ── Scrollable height driver ─────────────────────────────────────── */
+#scrollDist {
+  width: 100%;
+  /* Height set dynamically by JS */
+}
+
+/* ── Fixed app layer ──────────────────────────────────────────────── */
+#app {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Ambient background orbs ──────────────────────────────────────── */
+#app::before, #app::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(80px);
+  opacity: 0.18;
+}
+#app::before {
+  width: 60vw; height: 60vw;
+  background: radial-gradient(circle, #7c3aed, transparent 70%);
+  top: -20%; left: -15%;
+  animation: orbDrift1 12s ease-in-out infinite alternate;
+}
+#app::after {
+  width: 50vw; height: 50vw;
+  background: radial-gradient(circle, #ec4899, transparent 70%);
+  bottom: -15%; right: -10%;
+  animation: orbDrift2 15s ease-in-out infinite alternate;
+}
+
+@keyframes orbDrift1 {
+  from { transform: translate(0,0) scale(1); }
+  to   { transform: translate(6vw, 4vh) scale(1.1); }
+}
+@keyframes orbDrift2 {
+  from { transform: translate(0,0) scale(1); }
+  to   { transform: translate(-4vw, -6vh) scale(1.08); }
+}
+
+/* ── Narrative text layer ─────────────────────────────────────────── */
+#headlines-container {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.headline-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(16px, 4vh, 36px);
+  opacity: 0;
+  text-align: center;
+  padding: 24px;
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+
+.headline-text.interactive { pointer-events: auto; }
+
+/* Narrative text sits above the carousel — needs a dark vignette for readability */
+.headline-text::before {
+  content: '';
+  position: absolute;
+  inset: -20px;
+  background: radial-gradient(
+    ellipse 70% 60% at center,
+    rgba(5, 5, 20, 0.82) 0%,
+    rgba(5, 5, 20, 0.55) 45%,
+    transparent 80%
+  );
+  pointer-events: none;
+  z-index: -1;
+  border-radius: 50%;
+}
+
+/* Pixel-style headline */
+.headline-text h1,
+.headline-text p {
+  font-family: var(--font-pixel);
+  font-size: clamp(0.7rem, 2.5vw, 1.3rem);
+  line-height: 1.8;
+  letter-spacing: 0.04em;
+  text-shadow:
+    0 0 20px currentColor,
+    0 2px 4px rgba(0,0,0,0.8);
+  max-width: 560px;
+}
+
+/* Large heartfelt text variant */
+.headline-text .big-text {
+  font-family: var(--font-pixel);
+  font-size: clamp(1rem, 4vw, 2rem);
+  color: var(--accent);
+  text-shadow:
+    0 0 30px var(--accent),
+    0 0 60px rgba(255,101,163,0.4);
+  letter-spacing: 0.06em;
+  line-height: 1.6;
+}
+
+.headline-text .sub-text {
+  font-family: var(--font-vt);
+  font-size: clamp(1.2rem, 4vw, 2rem);
+  color: rgba(240,232,255,0.75);
+  max-width: 480px;
+}
+
+/* Pixel divider line */
+.pixel-line {
+  width: clamp(80px, 30vw, 200px);
+  height: 3px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--accent-2) 0, var(--accent-2) 8px,
+    transparent 8px, transparent 16px
+  );
+  opacity: 0.6;
+}
+
+/* ── YES / NO options ─────────────────────────────────────────────── */
+.options-container {
+  display: flex;
+  gap: clamp(16px, 4vw, 36px);
+  flex-wrap: wrap;
+  justify-content: center;
+  pointer-events: auto;
+  margin-top: 8px;
+}
+
+.option-btn {
+  font-family: var(--font-pixel);
+  font-size: clamp(0.6rem, 2vw, 0.9rem);
+  padding: clamp(10px, 2vh, 18px) clamp(20px, 4vw, 40px);
+  border-radius: 6px;
+  border: 2px solid;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
+  letter-spacing: 0.06em;
+  position: relative;
+}
+
+#btn-yes {
+  background: linear-gradient(135deg, #38d468, #1a8a3c);
+  border-color: #38d468;
+  color: white;
+  box-shadow: 0 6px 20px rgba(56,212,104,0.4);
+}
+#btn-yes:hover {
+  transform: scale(1.06);
+  box-shadow: 0 10px 30px rgba(56,212,104,0.6);
+}
+#btn-yes:active { transform: scale(0.96); }
+
+#btn-no {
+  background: linear-gradient(135deg, #e83030, #7f1111);
+  border-color: #e83030;
+  color: white;
+  box-shadow: 0 6px 20px rgba(232,48,48,0.4);
+}
+#btn-no:hover  { filter: brightness(1.15); }
+#btn-no:active { transform: scale(0.96); }
+
+/* ── 3D Carousel stage ────────────────────────────────────── */
+#carousel-section {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* Always visible — carousel is a persistent background */
+  opacity: 1;
+  pointer-events: auto;
+  will-change: opacity;
+}
+
+/* .visible kept for JS compatibility but not needed for visibility */
+#carousel-section.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Stage provides 3D perspective */
+#carousel-stage {
+  perspective: clamp(600px, 80vw, 1200px);
+  perspective-origin: 50% 50%;
+  width: 100%;
+  height: clamp(300px, 55vh, 520px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+}
+
+#carousel-stage.is-dragging { cursor: grabbing; }
+
+/* Inner rotating ring */
+#carousel-ring {
+  position: relative;
+  width: 0; height: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+/* ── Carousel Card ─────────────────────────────────────────────────── */
+.carousel-card {
+  position: absolute;
+  width: var(--card-w);
+  height: var(--card-h);
+  top: calc(var(--card-h) / -2);
+  left: calc(var(--card-w) / -2);
+  border-radius: 12px;
+  overflow: hidden;
+  will-change: transform, opacity, filter;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  border: 2px solid rgba(255,255,255,0.08);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+  cursor: pointer;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.carousel-card img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+  image-rendering: auto;
+  /* Remove any potential jitter */
+  will-change: auto;
+}
+
+/* Gradient overlay on each card */
+.carousel-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 40%,
+    rgba(5, 5, 16, 0.65) 100%
+  );
+  pointer-events: none;
+}
+
+/* Active (front-facing) card highlight */
+.carousel-card--active {
+  border-color: rgba(255,101,163,0.55);
+  box-shadow:
+    0 0 0 2px rgba(255,101,163,0.3),
+    0 12px 50px rgba(0,0,0,0.7),
+    0 0 40px rgba(255,101,163,0.12);
+}
+
+/* ── Carousel Navigation Controls ────────────────────────────────── */
+.carousel-nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(16px, 4vw, 36px);
+  margin-top: clamp(16px, 3vh, 28px);
+  position: relative;
+  z-index: 6;
+}
+
+.carousel-nav-btn {
+  width: clamp(44px, 8vw, 60px);
+  height: clamp(44px, 8vw, 60px);
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  border: 2px solid rgba(255,255,255,0.15);
+  color: var(--white);
+  font-size: clamp(1rem, 2.5vw, 1.4rem);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  user-select: none;
+}
+.carousel-nav-btn:hover {
+  background: rgba(255,101,163,0.18);
+  border-color: rgba(255,101,163,0.5);
+}
+.carousel-nav-btn:active { transform: scale(0.91); }
+
+/* Dot indicators */
+.carousel-dots {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.carousel-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+  transition: background 0.3s, transform 0.3s;
+  cursor: pointer;
+}
+.carousel-dot.active {
+  background: var(--accent);
+  transform: scale(1.5);
+}
+
+/* ── Hint text ────────────────────────────────────────────────────── */
+.carousel-hint {
+  font-family: var(--font-pixel);
+  font-size: clamp(0.35rem, 1.1vw, 0.5rem);
+  color: rgba(255,255,255,0.3);
+  text-align: center;
+  letter-spacing: 0.06em;
+  margin-top: 6px;
+  pointer-events: none;
+}
+
+/* ── Lightbox / Detail view ──────────────────────────────────────── */
+#detail {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  top: 100%;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  background: rgba(0,0,0,0.96);
+  cursor: pointer;
+  will-change: top;
+}
+
+#detailImg {
+  flex: 1;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  transform-origin: bottom;
+}
+
+#detailTxt {
+  padding: clamp(14px, 3vh, 28px) clamp(16px, 4vw, 36px);
+  font-family: var(--font-vt);
+  font-size: clamp(1.2rem, 3.5vw, 1.8rem);
+  color: rgba(240,232,255,0.8);
+  background: rgba(5,5,16,0.9);
+  text-align: center;
+  letter-spacing: 0.06em;
+}
+
+/* ── Heart shower particles ──────────────────────────────────────── */
+.heart-particle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  font-size: clamp(14px, 3vw, 28px);
+  animation: heartRise var(--dur, 4s) ease-out forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes heartRise {
+  0%   { transform: translateY(0) translateX(0) rotate(0deg) scale(1); opacity: 0.9; }
+  100% {
+    transform:
+      translateY(var(--dy,-110vh))
+      translateX(var(--dx, 0px))
+      rotate(var(--rot,360deg))
+      scale(var(--sc, 0.3));
+    opacity: 0;
+  }
+}
+
+/* ── Back to game button ─────────────────────────────────────────── */
+#back-btn {
+  position: fixed;
+  top: clamp(10px, 2vh, 20px);
+  left: clamp(10px, 2vw, 20px);
+  z-index: 200;
+  font-family: var(--font-pixel);
+  font-size: clamp(0.38rem, 1.2vw, 0.55rem);
+  background: rgba(255,255,255,0.06);
+  color: rgba(240,232,255,0.7);
+  border: 2px solid rgba(255,255,255,0.14);
+  border-radius: 6px;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.04em;
+}
+#back-btn:hover {
+  background: rgba(255,101,163,0.14);
+  border-color: rgba(255,101,163,0.4);
+  color: var(--accent);
+}
+
+/* ── Custom cursor (desktop only) ───────────────────────────────── */
+#cursor-svg {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 800;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  :root {
+    --card-w: clamp(140px, 60vw, 220px);
+    --card-h: clamp(190px, 80vw, 290px);
+  }
+
+  .carousel-nav { margin-top: 10px; }
+  .carousel-hint { display: none; }
+}
+
+@media (max-width: 360px) {
+  :root {
+    --card-w: 130px;
+    --card-h: 175px;
+  }
+}
+
+@media (min-width: 1440px) {
+  :root {
+    --card-w: 360px;
+    --card-h: 480px;
+  }
+}
+
+@media (min-width: 2560px) {
+  :root {
+    --card-w: 440px;
+    --card-h: 580px;
+  }
+}
+
+/* ── Reduced motion ──────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

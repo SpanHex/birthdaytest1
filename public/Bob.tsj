@@ -1,0 +1,14 @@
+{ "columns":24,
+ "image":"Bob.png",
+ "imageheight":224,
+ "imagewidth":384,
+ "margin":0,
+ "name":"Bob",
+ "spacing":0,
+ "tilecount":336,
+ "tiledversion":"1.10.2",
+ "tileheight":16,
+ "tilewidth":16,
+ "type":"tileset",
+ "version":"1.10"
+}

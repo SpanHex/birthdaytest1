@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="A special surprise for Rishika's birthday 💖">
+  <meta name="theme-color" content="#050510">
+  <title>Happy Birthday Rishika! 💖 — A Surprise Just For You</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+<!-- Scroll height driver -->
+<div id="scrollDist"></div>
+
+<!-- Back to game button -->
+<a id="back-btn" href="/" aria-label="Back to game">← Back to Game</a>
+
+<!-- Fixed app layer -->
+<div id="app">
+
+  <!-- Narrative text slides -->
+  <div id="headlines-container" aria-live="polite">
+
+    <div id="txt1" class="headline-text" aria-hidden="true">
+      <div class="pixel-line"></div>
+      <p class="big-text">Rishika...</p>
+      <div class="pixel-line"></div>
+    </div>
+
+    <div id="txt2" class="headline-text" aria-hidden="true">
+      <p class="big-text">🎂 Happy 17th Birthday! 🎂</p>
+      <p class="sub-text">Wishing you a day as amazing as you are ✨</p>
+    </div>
+
+    <div id="txt3" class="headline-text" aria-hidden="true">
+      <p style="color: var(--accent-3); font-family: var(--font-pixel); font-size: clamp(0.6rem,2vw,1rem); line-height:1.9; max-width:500px;">
+        Before you go...<br>
+        I wanted to say something
+      </p>
+    </div>
+
+    <div id="txt4" class="headline-text" aria-hidden="true">
+      <div class="pixel-line"></div>
+      <p class="big-text" style="color: var(--accent);">I am in love with you. 💖</p>
+      <div class="pixel-line"></div>
+    </div>
+
+    <div id="txt5" class="headline-text interactive" aria-hidden="true">
+      <p style="font-family:var(--font-pixel); font-size:clamp(0.55rem,1.8vw,0.85rem); line-height:2; color:var(--white);">
+        Will you be my girlfriend? 🌹
+      </p>
+      <div class="options-container">
+        <button id="btn-yes" class="option-btn" aria-label="Yes, I will be your girlfriend">💚 Yes!!</button>
+        <button id="btn-no"  class="option-btn" aria-label="No">❌ No</button>
+      </div>
+    </div>
+
+    <div id="txt6" class="headline-text" aria-hidden="true">
+      <p class="big-text" style="color:#ffd700;">YESSS!! I KNEW IT!! 🎉🎊</p>
+    </div>
+
+    <div id="txt7" class="headline-text" aria-hidden="true">
+      <div class="pixel-line"></div>
+      <p class="big-text">HAPPY 17th BIRTHDAY RISHIKA!!</p>
+      <p class="sub-text">I LOVE YOU SO MUCH!!! ❤️❤️❤️</p>
+      <div class="pixel-line"></div>
+    </div>
+
+  </div>
+
+  <!-- ── 3D Carousel ──────────────────────────────────────────── -->
+  <section id="carousel-section" aria-label="Photo carousel">
+
+    <div id="carousel-stage" role="region" aria-label="Drag or swipe to browse photos">
+      <div id="carousel-ring">
+        <!-- Cards injected by JS -->
+      </div>
+    </div>
+
+    <nav class="carousel-nav" aria-label="Carousel controls">
+      <button class="carousel-nav-btn" id="carousel-prev" aria-label="Previous photo">◀</button>
+      <div class="carousel-dots" id="carousel-dots" role="tablist" aria-label="Photo indicators"></div>
+      <button class="carousel-nav-btn" id="carousel-next" aria-label="Next photo">▶</button>
+    </nav>
+
+    <p class="carousel-hint" aria-hidden="true">
+      DRAG · SWIPE · SCROLL · ← → KEYS
+    </p>
+
+  </section>
+
+  <!-- ── Lightbox ─────────────────────────────────────────── -->
+  <div id="detail" role="dialog" aria-modal="true" aria-label="Photo detail" tabindex="-1">
+    <div id="detailImg" role="img" aria-label="Selected photo"></div>
+    <div id="detailTxt"></div>
+  </div>
+
+  <!-- Desktop custom cursor SVG -->
+  <svg id="cursor-svg" width="100%" height="100%" fill="none" stroke="#fff" aria-hidden="true" focusable="false">
+    <g id="cursor">
+      <circle id="cursorCircle" cx="0" cy="0" r="12" stroke-width="3"/>
+      <path   id="cursorClose"  d="M-20,-20 L20,20 M-20,20 L20,-20" opacity="0" stroke-width="3"/>
+    </g>
+  </svg>
+
+</div><!-- #app -->
+
+<!-- ── Orientation lock (portrait mobile only) ─────────────────── -->
+<div id="orientation-modal"
+     style="display:none; position:fixed; inset:0; background:#050510; z-index:9999;
+            flex-direction:column; align-items:center; justify-content:center; gap:20px;
+            padding:24px; text-align:center;"
+     role="dialog" aria-modal="true" aria-label="Please rotate your device">
+  <span style="font-size:3.5rem; animation:rotP 2s ease-in-out infinite;">📱</span>
+  <p style="font-family:'Press Start 2P',monospace; font-size:0.7rem; color:#ffd700; line-height:1.8; max-width:260px;">
+    ROTATE YOUR DEVICE
+  </p>
+  <p style="font-family:'VT323',monospace; font-size:1.3rem; color:#6b7280; max-width:240px; line-height:1.5;">
+    Please rotate sideways to view this page!
+  </p>
+  <style>
+    @keyframes rotP {
+      0%,20%{ transform:rotate(0deg); }
+      50%,80%{ transform:rotate(90deg); }
+      100%{ transform:rotate(0deg); }
+    }
+  </style>
+</div>
+
+<script src="./script.js"></script>
+</body>
+</html>
